@@ -1,0 +1,33 @@
+{
+  "name": "slender-mongoose",
+  "version": "1.0.1",
+  "description": "Mongoose schema/ type generator",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && cp package.json dist",
+    "test": "jest test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OliverHGray/slender-mongoose.git"
+  },
+  "keywords": [
+    "mongoose",
+    "typescript",
+    "schema",
+    "type",
+    "generator"
+  ],
+  "author": "Oliver Gray",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OliverHGray/slender-mongoose/issues"
+  },
+  "homepage": "https://github.com/OliverHGray/slender-mongoose#readme",
+  "devDependencies": {
+    "@types/mongoose": "^5.10.3",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.1",
+    "typescript": "^4.1.5"
+  }
+}
