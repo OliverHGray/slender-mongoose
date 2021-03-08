@@ -21,7 +21,7 @@ export const boolean = () => {
     return schema;
 };
 
-export interface BooleanSchema<Type extends boolean | undefined> extends BaseSchema<Type> {
-    optional: () => BooleanSchema<Type | undefined>;
+export interface BooleanSchema<Type extends boolean | null | undefined> extends BaseSchema<Type> {
+    optional: () => BooleanSchema<Type | null | undefined>;
     options: (options: SchemaTypeOpts<any>) => this;
 }

@@ -21,7 +21,7 @@ export const number = () => {
     return schema;
 };
 
-export interface NumberSchema<Type extends number | undefined> extends BaseSchema<Type> {
-    optional: () => NumberSchema<Type | undefined>;
+export interface NumberSchema<Type extends number | null | undefined> extends BaseSchema<Type> {
+    optional: () => NumberSchema<Type | null | undefined>;
     options: (options: SchemaTypeOpts<any>) => this;
 }

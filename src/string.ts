@@ -25,8 +25,8 @@ export const string = () => {
     return schema;
 };
 
-export interface StringSchema<Type extends string | undefined> extends BaseSchema<Type> {
-    optional: () => StringSchema<Type | undefined>;
+export interface StringSchema<Type extends string | null | undefined> extends BaseSchema<Type> {
+    optional: () => StringSchema<Type | null | undefined>;
     enum: <Enum extends Type>(
         arrayOfValues: ReadonlyArray<Enum>,
     ) => StringSchema<MaintainOptionality<Type, Enum>>;
