@@ -1,11 +1,16 @@
 import { Schema, SchemaTypeOpts } from 'mongoose';
 
-export interface BaseSchema<Type> {
+export interface BaseSchema<Type, FullType> {
     generateSchema: () => MongooseSchemaDefinition;
-    getExample(): Type;
+
+    // TypeScript loses the Type if it isn't used.
+    getExample: () => Type;
+    getFullExample: () => FullType;
 }
 
-export type MaintainOptionality<Current, New> = Current extends undefined ? New | undefined : New;
+export type MaintainOptionality<Current, New> = Current extends undefined
+    ? New | undefined
+    : New;
 
 export type MongooseSchemaDefinition =
     | Schema

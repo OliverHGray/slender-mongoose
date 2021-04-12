@@ -7,4 +7,12 @@ export * from './object';
 export * from './schema';
 export * from './string';
 
-export type GenerateType<T> = T extends BaseSchema<infer U> ? U : never;
+export type GenerateType<T> = T extends BaseSchema<infer U, infer V>
+    ? U
+    : never;
+
+export type GenerateFullType<T> = T extends BaseSchema<infer U, infer V>
+    ? V
+    : T extends BaseSchema<infer U, infer V>
+    ? V
+    : never;

@@ -1,35 +1,51 @@
 import { BaseSchema } from './base';
-import { Schema, SchemaOptions } from 'mongoose';
+import { Document, Schema, SchemaOptions } from 'mongoose';
 
-export const schema = <Fields extends object>(
-    fields: SchemaSchemaDefinition<Fields>,
-): SchemaSchema<Fields> => {
-    let options: SchemaOptions = {};
-    const schema: SchemaSchema<Fields> = {
-        onTransformation: (params) => {
-            options.toJSON = {
-                transform: (doc, ret) => {
-                    if (params.transform?._idToId) {
-                        ret.id = ret._id.toString();
-                    }
-                    if (params.transform?._idToId || params.omit?._id) {
-                        delete ret._id;
-                    }
-                    if (params.omit?.__v) {
-                        delete ret.__v;
-                    }
-                },
-            };
-            return schema;
+export const schema = <Fields extends object, FullFields extends object>(
+    fields: SchemaProperties<Fields> & SchemaFullProperties<FullFields>,
+): SchemaSchema<Fields, FullFields> => {
+    const transformations = {
+        enableId: false,
+        enableVersion: false,
+    };
+    let options: SchemaOptions = {
+        _id: false,
+        versionKey: false,
+        toJSON: {
+            transform: (doc, ret) => {
+                if (transformations.enableId) {
+                    ret.id = ret._id.toString();
+                    delete ret._id;
+                }
+                if (transformations.enableVersion) {
+                    ret.version = ret.__v;
+                    delete ret.__v;
+                }
+            },
         },
-        disableProperties: (params) => {
-            if (params._id !== undefined) {
-                options._id = params._id;
-            }
-            if (params.__v !== undefined) {
-                options.versionKey = params.__v;
-            }
-            return schema;
+    };
+    const schema: SchemaSchema<Fields, FullFields> = {
+        enableId: () => {
+            options._id = true;
+            transformations.enableId = true;
+            return schema as any;
+        },
+        enableUnderscoreId: () => {
+            options._id = true;
+            return schema as any;
+        },
+        enableVersion: () => {
+            options.versionKey = true;
+            transformations.enableVersion = true;
+            return schema as any;
+        },
+        enableUnderscoreVersion: () => {
+            options.versionKey = true;
+            return schema as any;
+        },
+        enableTimestamps: () => {
+            options.timestamps = true;
+            return schema as any;
         },
         options: (newOptions) => {
             options = {
@@ -57,29 +73,54 @@ export const schema = <Fields extends object>(
                 }),
                 {},
             ),
+        getFullExample: () =>
+            (Object.entries(fields) as any[]).reduce(
+                (schema, [key, value]) => ({
+                    ...schema,
+                    [key]: value.getExample(),
+                }),
+                {},
+            ),
     };
     return schema;
 };
 
-export type SchemaSchemaDefinition<Fields extends object> = {
-    [Field in keyof Fields]: BaseSchema<Fields[Field]>;
+export type SchemaProperties<Fields extends object> = {
+    [Field in keyof Fields]: BaseSchema<Fields[Field], any>;
 };
 
-export interface SchemaSchema<Fields extends object | undefined>
-    extends BaseSchema<Fields> {
-    onTransformation: (options: {
-        transform?: {
-            _idToId?: boolean;
-        };
-        omit?: {
-            _id?: boolean;
-            __v?: boolean;
-        };
-    }) => SchemaSchema<Fields>;
-    disableProperties: (options: {
-        _id?: boolean;
-        __v?: boolean;
-    }) => SchemaSchema<Fields>;
-    options: (options: SchemaOptions) => SchemaSchema<Fields>;
-    generateSchema: () => Schema<Fields>;
+export type SchemaFullProperties<FullFields extends object> = {
+    [Field in keyof FullFields]: BaseSchema<any, FullFields[Field]>;
+};
+
+export interface SchemaSchema<Fields extends object, FullFields extends object>
+    extends BaseSchema<Fields, FullFields> {
+    enableId: () => SchemaSchema<Fields, FullFields & Id>;
+    enableUnderscoreId: () => SchemaSchema<Fields, FullFields & _Id>;
+    enableVersion: () => SchemaSchema<Fields, FullFields & Version>;
+    enableUnderscoreVersion: () => SchemaSchema<Fields, FullFields & __V>;
+    enableTimestamps: () => SchemaSchema<Fields, FullFields & Timestamps>;
+    options: (options: SchemaOptions) => SchemaSchema<Fields, FullFields>;
+    generateSchema: () => Schema<Document<Fields>>;
 }
+
+type Id = {
+    id: string;
+};
+
+type _Id = {
+    _id: string;
+};
+
+type Version = {
+    version: string;
+};
+
+type __V = {
+    __v: string;
+};
+
+type Timestamps = {
+    createdAt: Date;
+    updatedAt: Date;
+};

@@ -2,7 +2,10 @@ import { BaseSchema } from './base';
 import { SchemaTypeOpts } from 'mongoose';
 
 export const boolean = () => {
-    let options: SchemaTypeOpts<BooleanConstructor> = { type: Boolean, required: true };
+    let options: SchemaTypeOpts<BooleanConstructor> = {
+        type: Boolean,
+        required: true,
+    };
     const schema: BooleanSchema<boolean> = {
         optional: () => {
             options.required = false;
@@ -17,11 +20,13 @@ export const boolean = () => {
         },
         generateSchema: () => options,
         getExample: () => false,
+        getFullExample: () => false,
     };
     return schema;
 };
 
-export interface BooleanSchema<Type extends boolean | null | undefined> extends BaseSchema<Type> {
+export interface BooleanSchema<Type extends boolean | null | undefined>
+    extends BaseSchema<Type, Type> {
     optional: () => BooleanSchema<Type | null | undefined>;
     options: (options: SchemaTypeOpts<any>) => this;
 }
