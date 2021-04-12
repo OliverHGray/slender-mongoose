@@ -77,7 +77,7 @@ export const schema = <Fields extends object, FullFields extends object>(
             (Object.entries(fields) as any[]).reduce(
                 (schema, [key, value]) => ({
                     ...schema,
-                    [key]: value.getExample(),
+                    [key]: value.getFullExample(),
                 }),
                 {},
             ),
