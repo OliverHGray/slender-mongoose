@@ -2,7 +2,7 @@ import { BaseSchema } from './base';
 
 export const array = <Type, FullType>(
     schema: BaseSchema<Type, FullType>,
-): ArraySchema<Type, FullType, Type[], FullType[]> => ({
+): ArraySchema<Type, Type[], FullType, FullType[]> => ({
     generateSchema: () => [schema.generateSchema()],
     getExample: () => [schema.getExample()],
     getFullExample: () => [schema.getFullExample()],
@@ -10,7 +10,7 @@ export const array = <Type, FullType>(
 
 export interface ArraySchema<
     InnerType,
-    FullInnerType,
     ArrayType extends InnerType[],
+    FullInnerType,
     FullArrayType extends FullInnerType[]
 > extends BaseSchema<ArrayType, FullArrayType> {}

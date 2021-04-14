@@ -7,6 +7,8 @@ export * from './object';
 export * from './schema';
 export * from './string';
 
+export { initialise } from './initialise';
+
 export type GenerateType<T> = T extends BaseSchema<infer U, infer V>
     ? U
     : never;

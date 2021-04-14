@@ -1,4 +1,5 @@
 import { BaseSchema } from './base';
+import { getSchemaConstructor } from './initialise';
 import { Document, Schema, SchemaOptions } from 'mongoose';
 
 export const schema = <Fields extends object, FullFields extends object>(
@@ -55,7 +56,7 @@ export const schema = <Fields extends object, FullFields extends object>(
             return schema;
         },
         generateSchema: () =>
-            new Schema(
+            new (getSchemaConstructor())(
                 (Object.entries(fields) as any[]).reduce(
                     (schema, [key, value]) => ({
                         ...schema,
