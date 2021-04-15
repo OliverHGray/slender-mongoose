@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && cp package.json dist",
+    "dist": "rm -r dist && npm run build && cd dist && npm publish",
     "test": "jest test"
   },
   "repository": {
