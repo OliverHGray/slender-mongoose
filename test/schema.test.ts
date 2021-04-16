@@ -1,4 +1,4 @@
-import { GenerateType, GenerateFullType, schema, string } from '../src';
+import { GenerateType, GeneratePartialType, schema, string } from '../src';
 
 test('check schema types dont error', () => {
     const definition = schema({
@@ -7,14 +7,14 @@ test('check schema types dont error', () => {
         .enableTimestamps()
         .enableId();
 
-    type CreateType = GenerateType<typeof definition>;
+    type CreateType = GeneratePartialType<typeof definition>;
     const create = (param: CreateType) => console.log(param);
 
     create({
         property: 'true',
     });
 
-    type ResultType = GenerateFullType<typeof definition>;
+    type ResultType = GenerateType<typeof definition>;
     const result = (param: ResultType) => console.log(param);
 
     result({

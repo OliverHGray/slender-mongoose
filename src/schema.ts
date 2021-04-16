@@ -1,10 +1,9 @@
 import { BaseSchema } from './base';
-import { getSchemaConstructor } from './initialise';
 import { Document, Schema, SchemaOptions } from 'mongoose';
 
-export const schema = <Fields extends object, FullFields extends object>(
-    fields: SchemaProperties<Fields> & SchemaFullProperties<FullFields>,
-): SchemaSchema<Fields, FullFields> => {
+export const schema = <Fields extends object, PartialFields extends object>(
+    fields: SchemaProperties<Fields> & SchemaPartialProperties<PartialFields>,
+): SchemaSchema<Fields, PartialFields> => {
     const transformations = {
         enableId: false,
         enableVersion: false,
@@ -25,7 +24,7 @@ export const schema = <Fields extends object, FullFields extends object>(
             },
         },
     };
-    const schema: SchemaSchema<Fields, FullFields> = {
+    const schema: SchemaSchema<Fields, PartialFields> = {
         enableId: () => {
             options._id = true;
             transformations.enableId = true;
@@ -55,8 +54,8 @@ export const schema = <Fields extends object, FullFields extends object>(
             };
             return schema;
         },
-        generateSchema: () =>
-            new (getSchemaConstructor())(
+        generateSchema: (constructor) =>
+            new constructor(
                 (Object.entries(fields) as any[]).reduce(
                     (schema, [key, value]) => ({
                         ...schema,
@@ -74,7 +73,7 @@ export const schema = <Fields extends object, FullFields extends object>(
                 }),
                 {},
             ),
-        getFullExample: () =>
+        getPartialExample: () =>
             (Object.entries(fields) as any[]).reduce(
                 (schema, [key, value]) => ({
                     ...schema,
@@ -90,19 +89,21 @@ export type SchemaProperties<Fields extends object> = {
     [Field in keyof Fields]: BaseSchema<Fields[Field], any>;
 };
 
-export type SchemaFullProperties<FullFields extends object> = {
-    [Field in keyof FullFields]: BaseSchema<any, FullFields[Field]>;
+export type SchemaPartialProperties<PartialFields extends object> = {
+    [Field in keyof PartialFields]: BaseSchema<any, PartialFields[Field]>;
 };
 
-export interface SchemaSchema<Fields extends object, FullFields extends object>
-    extends BaseSchema<Fields, FullFields> {
-    enableId: () => SchemaSchema<Fields, FullFields & Id>;
-    enableUnderscoreId: () => SchemaSchema<Fields, FullFields & _Id>;
-    enableVersion: () => SchemaSchema<Fields, FullFields & Version>;
-    enableUnderscoreVersion: () => SchemaSchema<Fields, FullFields & __V>;
-    enableTimestamps: () => SchemaSchema<Fields, FullFields & Timestamps>;
-    options: (options: SchemaOptions) => SchemaSchema<Fields, FullFields>;
-    generateSchema: () => Schema<Document<Fields>>;
+export interface SchemaSchema<
+    Fields extends object,
+    PartialFields extends object
+> extends BaseSchema<Fields, PartialFields> {
+    enableId: () => SchemaSchema<Fields & Id, PartialFields>;
+    enableUnderscoreId: () => SchemaSchema<Fields & _Id, PartialFields>;
+    enableVersion: () => SchemaSchema<Fields & Version, PartialFields>;
+    enableUnderscoreVersion: () => SchemaSchema<Fields & __V, PartialFields>;
+    enableTimestamps: () => SchemaSchema<Fields & Timestamps, PartialFields>;
+    options: (options: SchemaOptions) => SchemaSchema<Fields, PartialFields>;
+    generateSchema: (constructor: typeof Schema) => Schema<Document<Fields>>;
 }
 
 type Id = {

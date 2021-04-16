@@ -20,7 +20,7 @@ export const boolean = () => {
         },
         generateSchema: () => options,
         getExample: () => false,
-        getFullExample: () => false,
+        getPartialExample: () => false,
     };
     return schema;
 };

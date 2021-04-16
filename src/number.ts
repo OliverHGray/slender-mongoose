@@ -20,7 +20,7 @@ export const number = () => {
         },
         generateSchema: () => options,
         getExample: () => 0,
-        getFullExample: () => 0,
+        getPartialExample: () => 0,
     };
     return schema;
 };

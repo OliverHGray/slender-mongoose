@@ -1,4 +1,10 @@
-import { GenerateType, GenerateFullType, array, schema, string } from '../src';
+import {
+    GeneratePartialType,
+    GenerateType,
+    array,
+    schema,
+    string,
+} from '../src';
 
 test('check schema types dont error', () => {
     const definition = schema({
@@ -11,7 +17,7 @@ test('check schema types dont error', () => {
         ),
     });
 
-    type CreateType = GenerateType<typeof definition>;
+    type CreateType = GeneratePartialType<typeof definition>;
     const create = (param: CreateType) => console.log(param);
 
     create({
@@ -22,7 +28,7 @@ test('check schema types dont error', () => {
         ],
     });
 
-    type ResultType = GenerateFullType<typeof definition>;
+    type ResultType = GenerateType<typeof definition>;
     const result = (param: ResultType) => console.log(param);
 
     result({

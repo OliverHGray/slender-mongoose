@@ -24,7 +24,7 @@ export const string = () => {
         },
         generateSchema: () => options,
         getExample: () => '',
-        getFullExample: () => '',
+        getPartialExample: () => '',
     };
     return schema;
 };
