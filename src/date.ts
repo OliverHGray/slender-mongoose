@@ -11,6 +11,10 @@ export const date = () => {
             options.required = false;
             return schema;
         },
+        unique: () => {
+            options.unique = true;
+            return schema;
+        },
         options: (newOptions) => {
             options = {
                 ...options,
@@ -28,5 +32,6 @@ export const date = () => {
 export interface DateSchema<Type extends Date | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => DateSchema<Type | null | undefined>;
+    unique: () => DateSchema<Type>;
     options: (options: SchemaTypeOpts<any>) => this;
 }

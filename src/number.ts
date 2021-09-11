@@ -11,6 +11,10 @@ export const number = () => {
             options.required = false;
             return schema;
         },
+        unique: () => {
+            options.unique = true;
+            return schema;
+        },
         options: (newOptions) => {
             options = {
                 ...options,
@@ -28,5 +32,6 @@ export const number = () => {
 export interface NumberSchema<Type extends number | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => NumberSchema<Type | null | undefined>;
+    unique: () => NumberSchema<Type>;
     options: (options: SchemaTypeOpts<any>) => this;
 }

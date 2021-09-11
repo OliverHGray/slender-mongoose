@@ -11,6 +11,10 @@ export const boolean = () => {
             options.required = false;
             return schema;
         },
+        unique: () => {
+            options.unique = true;
+            return schema;
+        },
         options: (newOptions) => {
             options = {
                 ...options,
@@ -28,5 +32,6 @@ export const boolean = () => {
 export interface BooleanSchema<Type extends boolean | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => BooleanSchema<Type | null | undefined>;
+    unique: () => BooleanSchema<Type>;
     options: (options: SchemaTypeOpts<any>) => this;
 }

@@ -11,6 +11,10 @@ export const string = () => {
             options.required = false;
             return schema;
         },
+        unique: () => {
+            options.unique = true;
+            return schema;
+        },
         enum: (arrayOfValues) => {
             options.enum = arrayOfValues as any;
             return schema as any;
@@ -32,6 +36,7 @@ export const string = () => {
 export interface StringSchema<Type extends string | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => StringSchema<Type | null | undefined>;
+    unique: () => StringSchema<Type>;
     enum: <Enum extends Type>(
         arrayOfValues: ReadonlyArray<Enum>,
     ) => StringSchema<MaintainOptionality<Type, Enum>>;
