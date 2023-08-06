@@ -1,8 +1,8 @@
 import { BaseSchema } from './base';
-import { SchemaTypeOpts } from 'mongoose';
+import { SchemaTypeOptions } from 'mongoose';
 
 export const date = () => {
-    let options: SchemaTypeOpts<BooleanConstructor> = {
+    let options: SchemaTypeOptions<BooleanConstructor> = {
         type: Date,
         required: true,
     };
@@ -33,5 +33,5 @@ export interface DateSchema<Type extends Date | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => DateSchema<Type | null | undefined>;
     unique: () => DateSchema<Type>;
-    options: (options: SchemaTypeOpts<any>) => this;
+    options: (options: SchemaTypeOptions<any>) => this;
 }

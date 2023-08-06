@@ -1,12 +1,12 @@
 import { BaseSchema } from './base';
-import { Document, Schema, SchemaOptions } from 'mongoose';
+import { Document, Schema, SchemaOptions, SchemaTimestampsConfig } from 'mongoose';
 
 export const schema = <Fields extends object, PartialFields extends object>(
     fields: SchemaProperties<Fields> & SchemaPartialProperties<PartialFields>,
 ): SchemaSchema<Fields, PartialFields> => {
     const transformations = {
         enableId: false,
-        enableVersion: false,
+        omit: [] as string[],
     };
     let options: SchemaOptions = {
         _id: false,
@@ -14,13 +14,14 @@ export const schema = <Fields extends object, PartialFields extends object>(
         toJSON: {
             transform: (doc, ret) => {
                 if (transformations.enableId) {
-                    ret.id = ret._id.toString();
+                    ret = {
+                      id: ret._id.toString(),
+                      ...ret,
+                    }
                     delete ret._id;
                 }
-                if (transformations.enableVersion) {
-                    ret.version = ret.__v;
-                    delete ret.__v;
-                }
+                transformations.omit.forEach(key => delete ret[key]);
+                return ret
             },
         },
     };
@@ -35,17 +36,20 @@ export const schema = <Fields extends object, PartialFields extends object>(
             return schema as any;
         },
         enableVersion: () => {
-            options.versionKey = true;
-            transformations.enableVersion = true;
+            options.versionKey = 'version';
             return schema as any;
         },
         enableUnderscoreVersion: () => {
-            options.versionKey = true;
+            options.versionKey = '__v';
             return schema as any;
         },
-        enableTimestamps: () => {
-            options.timestamps = true;
+        enableTimestamps: (timestamps = { createdAt: true, updatedAt: true }) => {
+            options.timestamps = timestamps;
             return schema as any;
+        },
+        omitFromJson: (omit) => {
+            transformations.omit = omit;
+            return schema;
         },
         options: (newOptions) => {
             options = {
@@ -59,7 +63,7 @@ export const schema = <Fields extends object, PartialFields extends object>(
                 (Object.entries(fields) as any[]).reduce(
                     (schema, [key, value]) => ({
                         ...schema,
-                        [key]: value.generateSchema(),
+                        [key]: value.generateSchema(constructor),
                     }),
                     {},
                 ),
@@ -101,7 +105,8 @@ export interface SchemaSchema<
     enableUnderscoreId: () => SchemaSchema<Fields & _Id, PartialFields>;
     enableVersion: () => SchemaSchema<Fields & Version, PartialFields>;
     enableUnderscoreVersion: () => SchemaSchema<Fields & __V, PartialFields>;
-    enableTimestamps: () => SchemaSchema<Fields & Timestamps, PartialFields>;
+    enableTimestamps: (timestamps?: SchemaTimestampsConfig) => SchemaSchema<Fields & Timestamps, PartialFields>;
+    omitFromJson: (keys: string[]) => SchemaSchema<Fields, PartialFields>;
     options: (options: SchemaOptions) => SchemaSchema<Fields, PartialFields>;
     generateSchema: (constructor: typeof Schema) => Schema<Document<Fields>>;
 }

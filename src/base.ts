@@ -1,4 +1,4 @@
-import { Schema, SchemaTypeOpts } from 'mongoose';
+import { Schema, SchemaTypeOptions } from 'mongoose';
 
 export interface BaseSchema<Type, PartialType> {
     generateSchema: GenerateSchema;
@@ -14,9 +14,9 @@ export type GenerateSchema = (
 
 export type MongooseSchemaDefinition =
     | Schema
-    | SchemaTypeOpts<any>
+    | SchemaTypeOptions<any>
     | {
-          [key: string]: SchemaTypeOpts<any> | MongooseSchemaDefinition;
+          [key: string]: SchemaTypeOptions<any> | MongooseSchemaDefinition;
       }
     | [MongooseSchemaDefinition];
 

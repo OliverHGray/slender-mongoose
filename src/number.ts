@@ -1,8 +1,8 @@
 import { BaseSchema } from './base';
-import { SchemaTypeOpts } from 'mongoose';
+import { SchemaTypeOptions } from 'mongoose';
 
 export const number = () => {
-    let options: SchemaTypeOpts<NumberConstructor> = {
+    let options: SchemaTypeOptions<NumberConstructor> = {
         type: Number,
         required: true,
     };
@@ -33,5 +33,5 @@ export interface NumberSchema<Type extends number | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => NumberSchema<Type | null | undefined>;
     unique: () => NumberSchema<Type>;
-    options: (options: SchemaTypeOpts<any>) => this;
+    options: (options: SchemaTypeOptions<any>) => this;
 }

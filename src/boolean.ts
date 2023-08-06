@@ -1,8 +1,8 @@
 import { BaseSchema } from './base';
-import { SchemaTypeOpts } from 'mongoose';
+import { SchemaTypeOptions } from 'mongoose';
 
 export const boolean = () => {
-    let options: SchemaTypeOpts<BooleanConstructor> = {
+    let options: SchemaTypeOptions<BooleanConstructor> = {
         type: Boolean,
         required: true,
     };
@@ -33,5 +33,5 @@ export interface BooleanSchema<Type extends boolean | null | undefined>
     extends BaseSchema<Type, Type> {
     optional: () => BooleanSchema<Type | null | undefined>;
     unique: () => BooleanSchema<Type>;
-    options: (options: SchemaTypeOpts<any>) => this;
+    options: (options: SchemaTypeOptions<any>) => this;
 }

@@ -1,8 +1,8 @@
-import { SchemaTypeOpts } from 'mongoose';
+import { SchemaTypeOptions } from 'mongoose';
 import { MaintainOptionality, BaseSchema } from './base';
 
 export const string = () => {
-    let options: SchemaTypeOpts<StringConstructor> = {
+    let options: SchemaTypeOptions<StringConstructor> = {
         type: String,
         required: true,
     };
@@ -40,5 +40,5 @@ export interface StringSchema<Type extends string | null | undefined>
     enum: <Enum extends Type>(
         arrayOfValues: ReadonlyArray<Enum>,
     ) => StringSchema<MaintainOptionality<Type, Enum>>;
-    options: (options: SchemaTypeOpts<any>) => this;
+    options: (options: SchemaTypeOptions<any>) => this;
 }
